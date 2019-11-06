@@ -1,0 +1,352 @@
+*:focus {
+    outline: none;
+}
+
+html {
+  overflow: hidden;
+}
+
+body, .popover {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+}
+
+.ümbris {
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  width: 100%;
+}
+
+#viewDiv {
+  width: 100%;
+  height: 100vh;
+  bottom: 0px;
+}
+
+.navielemendid {
+  display: flex;
+  justify-content: space-between;
+}
+
+.esri-attribution {
+  display: none
+}
+
+.esri-ui-bottom-left {
+  bottom: 25px;
+}
+
+.esri-ui-bottom-right {
+  bottom: 25px;
+}
+
+.esri-ui-corner {
+  padding-top: 55px
+}
+
+.esri-ui-corner .esri-widget--panel {
+  width: 400px;
+}
+
+.esri-widget {
+  color: black;
+  font-family: inherit;
+}
+
+.esri-widget--button {
+  color: white;
+  background-color: #30415D;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+.esri-widget-button:hover {
+  background-color: #8EAEBD
+}
+
+.esri-view-height-medium .esri-ui-corner .esri-legend {
+  max-height: none;
+}
+
+.esri-legend {
+  background-color: transparent;
+}
+
+.esri-legend__service {
+  border-bottom: none;
+}
+
+.esri-view-height-medium .esri-ui-corner .esri-legend {
+  max-height: 550px;
+}
+
+.esri-layer-list__item-container {
+  border-bottom: none;
+}
+
+.esri-layer-list {
+  padding: 0;
+  background-color: transparent
+}
+.esri-layer-list__item {
+  font-weight: 600;
+  background-color: transparent;
+  border-bottom: none;
+  color: black
+}
+
+.esri-legend__layer-cell {
+  padding: 0px 3px;
+}
+
+.esri-layer-list__item-title {
+  word-break: normal
+}
+
+.esri-layer-list__item-toggle-icon {
+  font-size: 18px;
+}
+
+.esri-layer-list__item-toggle {
+  padding: 5px 3px 0px 0px;
+  margin-top: -7px;
+  width: 20px;
+  height: 20px
+}
+
+.esri-icon-visible:before {
+  content: "☑";
+}
+
+.esri-icon-non-visible:before {
+  content: "☐";
+}
+
+.esri-search {
+  width: 300px;
+  height: 40px
+}
+
+.esri-search__submit-button, .esri-search__clear-button, .esri-search__sources-button {
+margin: 10px 0
+}
+
+.esri-search__sources-menu {
+  margin: -10px 0
+}
+
+.esri-input {
+  margin: 13px 0;
+}
+
+.esri-input::placeholder {
+  color: black
+}
+
+h1 {
+  color: black;
+  font-size: 35px;
+  top: 0;
+  margin: 0;
+}
+
+h2 {
+  color: black;
+  letter-spacing: 0;
+}
+
+.nähtamatu {
+  opacity: 0;
+  height: 0 !important;
+  width: 0;
+}
+
+#otsing {
+  position: absolute;
+  top: 70px;
+  left: 400px;
+  z-index: 1
+}
+
+.btn-secondary {
+  background-color: #30415D;
+  color: white !important;
+}
+
+.btn-secondary:hover {
+  background-color: #8EAEBD
+}
+
+.fa {
+  padding-right: 10px
+}
+
+.sees {
+  font-weight: 1000;
+  background-color: #30415D;
+  color: white !important;
+}
+
+.paneel {
+  position:absolute;
+  width: 390px;
+  height: 94vh;
+  display: flex;
+  flex-direction: column;
+  left: 0px;
+  top: 0px;
+  margin-top: 56px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: black;
+}
+
+.küljepaneel {
+  margin: 0 10px;
+  padding-top: 15px;
+  border-top: 1px solid #30415D;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0px;
+}
+
+.mahuti-lisainfo {
+  flex: 1;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.mahuti-legend, .mahuti-kihid {
+  height: 100vh;
+}
+
+.vasak-paneel {
+  background-color: white
+}
+
+.navinupud {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 15px
+}
+
+.menüü {
+  margin: 0 auto;
+  padding: 5px 30px
+}
+
+.paneeli-pilt {
+  width: 100%;
+  cursor: pointer;
+  margin: 10px 0
+}
+
+.modal-dialog {
+  max-width: 60%
+}
+
+.modal-content {
+  border-radius: 0px
+}
+
+.sulge-modal {
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+}
+
+.sulge-modal:hover {
+  color: white;
+  background-color: #30415D
+}
+
+#naviRiba {
+  position: absolute;
+  top: 0px;
+  color: white;
+  width: 100%;
+  z-index: 1;
+}
+
+@media (max-width: 1150px) {
+  .logo {
+    display: none
+  }
+}
+
+.svg-inline--fa {
+  margin-right: 5px;
+}
+
+.nav-item {
+  text-align: center;
+  display: flex;
+  align-items: center
+}
+
+#topbar {
+  background: transparent;
+  padding: 0;
+  box-shadow: none
+}
+
+#mõõtkava {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  box-shadow: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.action-button {
+  border: none;
+  text-align: center;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+  color: white;
+  background-color: #30415D;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+.action-button:hover,
+.action-button:focus,
+.esri-button--secondary:hover {
+  background: #6C7581;
+  color: #e4e4e4;
+}
+
+.active-mõõtmine {
+  background-color: #a32135;
+  color: #e4e4e4;
+}
+
+/**  SCROLLBAR */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #30415D;
+  border: 1px solid #aaa;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(left, #22ADD4, #1E98BA);
+}

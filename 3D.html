@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <link rel="icon" href="http://www.hendrikson.ee/maps/Mereala-planeering/img/logo-P-ketas.png" sizes="192x192"/>
+  <title>Saku valla üldplaneering</title>
+  <link href="https://fonts.googleapis.com/css?family=Raleway:300" rel="stylesheet">
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    dojoConfig = {
+      locale: "et",
+      parseOnLoad: true
+    };
+  </script>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/css/main.css">
+  <link rel="stylesheet" href="css/rakendus.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+  <script src="https://js.arcgis.com/4.10/"></script>
+  <script src="js/3D.js"></script>
+</head>
+
+<body>
+  <div id="page-content-wrapper">
+    <div id="naviRiba">
+      <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #30415D;">
+        <div class="container-fluid" style="padding-left: 0px">
+          <div class="col-sm-12">
+            <div class="row navielemendid">
+              <div class="col-sm-6" style="padding-left: 0px">
+                <a href="./" class="navbar-brand">SAKU VALLA ÜLDPLANEERING</a>
+                <a href="./" class="navbar-brand active" style="font-size: 1rem; color: rgba(255,255,255,.5)">Avaleht</a>
+                <a href="#" class="navbar-brand" style="font-size: 1rem">3D vaade</a>
+              </div>
+              <div>
+                <a href="http://www.hendrikson.ee" class= "logo"> <img src="http://www.hendrikson.ee/maps/Saku-vald/img/HjaKo-p.svg" style="height: 30px; width: auto; margin-top: 4px; margin-left: 10px" alt="Responsive image"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="ümbris">
+      <div id="viewDiv"></div>
+      <div id="mõõtkava">Kõrgus: <span id="kõrgusNr"></span> m</div>
+      <div id="topbar">
+        <button class="action-button esri-icon-polyline" id="distanceButton" type="button" data-toggle="tooltip" data-placement="bottom" title="Mõõda kaugust"></button>
+        <button class="action-button esri-icon-polygon" id="areaButton" type="button" data-toggle="tooltip" data-placement="bottom" title="Mõõda pindala"></button>
+      </div>
+      <div class="paneel">
+        <div class="navinupud">
+          <a class="menüü btn rounded-0 sees" id="Lisainfo">LISAINFO</a>
+          <a class="menüü btn rounded-0" id="Legend">LEGEND</a>
+          <a class="menüü btn rounded-0" id="Kihid">KIHID</a>
+        </div>
+        <div class="küljepaneel">
+          <div class="mahuti-lisainfo">
+            <h4>Saku aleviku 3D vaade</h4>
+            <p>Kaardirakendus koosneb kihtidest, mida on võimalik alajaotuse "Kihid" alt ükshaaval sisse/välja lülitada.</p>
+            <p>Kaardipilt on kolmemõõtmeline ning selle vaatenurka ja kõrgust on võimalik ekraani paremas servas olevate nuppude abli igas suunas muuta. </p>
+            <p>Aluskaarti saab vahetada alumises paremas nurgas asuvast nupust.</p>
+          </div>
+          <div id="mahuti-legend" class="mahuti-legend nähtamatu"></div>
+          <div id="mahuti-kihid" class="mahuti-kihid nähtamatu"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+              <img class="paneeli-pilt showimage img-responsive" src="">
+              <div class="sulge-modal" data-dismiss="modal">
+                <a><span >Sulge</span></a>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/jquery.js"></script>
+</body>
+
+</html>
