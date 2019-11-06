@@ -14,7 +14,7 @@
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   <link rel="icon" href="./img/logo-P-ketas.png" sizes="192x192"/>
   <title>Eesti riigimaanteede loomaohtlikkus</title>
-  <link href="https://fonts.googleapis.com/css?family=Raleway:300" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Muli:300&display=swap" rel="stylesheet">
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -34,7 +34,7 @@
 <body>
   <div id="page-content-wrapper">
     <div id="naviRiba">
-      <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #30415D;">
+      <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #5f7778;">
         <div class="container-fluid" style="padding-left: 0px">
           <div class="col-sm-12">
             <div class="row navielemendid">
@@ -42,6 +42,7 @@
                 <a href="./" class="navbar-brand">EESTI RIIGIMAANTEEDE LOOMAOHTLIKKUS</a>
               </div>
               <div>
+                <a href="https://www.mnt.ee/et" class= "logo"> <img src="./img/mnt-logo.svg" style="height: 35px; width: auto; margin-top: 4px; margin-left: 10px" alt="Responsive image"></a>
                 <a href="http://www.hendrikson.ee" class= "logo"> <img src="./img/HjaKo-p.svg" style="height: 30px; width: auto; margin-top: 4px; margin-left: 10px" alt="Responsive image"></a>
               </div>
             </div>
@@ -51,8 +52,9 @@
     </div>
     <div class="ümbris">
       <div id="otsing"></div>
+      <a class="btn btn-secondary rounded-0" id="aluskaart"><i class="far fa-map"></i> Vaheta aluskaarti</a>
       <div id="viewDiv"></div>
-      <div id="mõõtkava">Mõõtkava 1: <span id="mõõtkavaNr"></span></div>
+      <!--<div id="mõõtkava">Mõõtkava 1: <span id="mõõtkavaNr"></span></div>-->
       <div id="topbar">
         <button class="action-button esri-icon-polyline" id="distanceButton" type="button" data-toggle="tooltip" data-placement="bottom" title="Mõõda kaugust"></button>
         <button class="action-button esri-icon-polygon" id="areaButton" type="button" data-toggle="tooltip" data-placement="bottom" title="Mõõda pindala"></button>

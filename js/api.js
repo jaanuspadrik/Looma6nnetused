@@ -1,5 +1,6 @@
 require([
   "esri/Map",
+  "esri/Basemap",
   "esri/WebMap",
   "esri/views/MapView",
   "esri/layers/VectorTileLayer",
@@ -17,29 +18,48 @@ require([
   "esri/widgets/Home",
   "esri/widgets/DistanceMeasurement2D",
   "esri/widgets/AreaMeasurement2D",
+  "esri/widgets/BasemapToggle",
   "esri/geometry/Extent",
-  "esri/config"
-], function(Map, WebMap, MapView, VectorTileLayer, MapImageLayer, FeatureLayer, WMSLayer, GroupLayer, PopupTemplate, Legend, Expand, LayerList, Fullscreen, Search, Locator, Home, DistanceMeasurement2D, AreaMeasurement2D, Extent, esriConfig) {
+  "esri/config",
+  "dojo/dom",
+  "dojo/query",
+  "dojo/on",
+  "dojo/domReady!"
+], function(Map, Basemap, WebMap, MapView, VectorTileLayer, MapImageLayer, FeatureLayer, WMSLayer, GroupLayer, PopupTemplate, Legend, Expand, LayerList, Fullscreen, Search, Locator, Home, DistanceMeasurement2D, AreaMeasurement2D, BasemapToggle, Extent, esriConfig, dom, query, on) {
 
-  esriConfig.portalUrl = "https://maps.hendrikson.ee/arcgis/";
+  //esriConfig.portalUrl = "https://maps.hendrikson.ee/arcgis/";
 
-  var map = new WebMap({
-    portalItem: {
-      id: "c7d719fba1724641a590a80905279865"
-    }
+  var Aluskaart = new WMSLayer ({
+    url: "https://kaart.maaamet.ee/wms/hallkaart?service=WMS&version=1.3.0&request=GetCapabilities",
+    title: "Hallkaart",
+    listMode: "hide-children",
+    visible: true
+  });
+
+  var basemap = new Basemap({
+    baseLayers: [Aluskaart],
+    title: "Aluskaart"
+  });
+
+  var map = new Map({
+    basemap: basemap
   });
 
   var view = new MapView({
     container: "viewDiv",
     map: map,
-    center: [24.68, 59.29],
-    zoom: 11,
-    constraints: {
-      minZoom: 11
+    scale: 1100000,
+    spatialReference: {
+      wkid: 3301
+    },
+    center: {
+      y: 6499875,
+      x: 527000,
+      spatialReference: 3301
     }
   });
 
-  view.watch("scale", function(value) {
+  /*view.watch("scale", function(value) {
     var str = value.toFixed(0);
     if (str.length == 5) {
       str = str.slice(0, 2) + ' ' + str.slice(2)
@@ -50,649 +70,194 @@ require([
       str = str.slice(0, 3) + ' ' + str.slice(3)
     }
     mõõtkavaNumber = document.getElementById("mõõtkavaNr").innerHTML = str;
-  });
+  });*/
 
-  /*var labelClass = {
-    symbol: {
-      type: "text",
-      horizontalAlignment: "right",
-      color: "#454f8a",
-      haloColor: "white",
-      haloSize: "1px",
-      font: {
-        family: "Arial",
-        size: 8,
-        weight: "bold"
-      }
-    },
-    labelExpressionInfo: {
-      expression: "'Ol.ol. el. arv: ' + Floor($feature.Olol_el_ar, 0) + TextFormatting.NewLine + 'Lisanduv el. arv: ' + Floor($feature.Lis_el_ar, 0)"
-    }
-  };
-
-  var Piirkonnad = new FeatureLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Hosted/Saku_ÜP_elanike_arvu_analüüs_algne/FeatureServer/0",
-    title: "Elanike arvu analüüs - aprill 2019 (lisanduva elanikkonna arvutamiseks jagati hoonestamata pere- ja ridaelamu maa-ala 3000 m2-ga ning korrutati saadud kruntide arv 2,4-ga. Korterelamute puhul olid vastavad väärtused 200 m2 ja 2,4.)",
-    visible: false,
-    opacity: 0.6,
-    labelingInfo: [labelClass],
-    outFields: ["*"]
-  });
-
-  var Piirkonnad2 = new FeatureLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Hosted/Saku_ÜP_elanike_arvu_analüüs/FeatureServer/0",
-    title: "Elanike arvu analüüs - korrigeeritud eskiislahenduse põhjal, juuni 2019 (lisanduva elanikkonna arvutamiseks jagati hoonestamata pere- ja ridaelamu maa-ala 3000 m2-ga ning korrutati saadud kruntide arv 2,4-ga. Korterelamute puhul olid vastavad väärtused 200 m2 ja 2,4.)",
-    visible: false,
-    opacity: 0.6,
-    labelingInfo: [labelClass],
-    outFields: ["*"]
-  });
-  */
-
-  var Vallapiir = new MapImageLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Saku_ÜP/Saku_vald_maakasutus/MapServer",
-    title: "Saku valla piir",
-    listMode: "hide",
-    sublayers: [
-    {
-      id: 0,
-      title: " "
-    }]
-  });
-
-  var Tiheasustus = new MapImageLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Saku_ÜP/Saku_vald_maakasutus/MapServer",
-    title: "Tiheasustusega ala",
-    listMode: "hide-children",
-    visible: true,
-    opacity: 1,
-    sublayers: [
-    {
-      id: 15,
-      title: " ",
-      popupTemplate: {
-        title: "Tiheasustusega ala"
-      }
-    }]
-  });
-
-  var Maakasutus = new MapImageLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Saku_ÜP/Saku_vald_maakasutus/MapServer",
-    title: "Kavandatav maakasutus",
-    visible: true,
-    opacity: 0.7,
-    sublayers: [
-    {
-      id: 2,
-      title: "Teemaa ja liiklust korraldava ehitise maa-ala (LT)",
-      popupTemplate: {
-        title: "Teemaa ja liiklust korraldava ehitise maa-ala"
-      }
-    },
-    {
-      id: 3,
-      title: "Pere- ja ridaelamu maa-ala (EP)",
-      popupTemplate: {
-        title: "Pere- ja ridaelamu maa-ala"
-      }
-    },
-    {
-      id: 4,
-      title: "Korterelamu maa-ala (EK)",
-      popupTemplate: {
-        title: "Korterelamu maa-ala"
-      }
-    },
-    {
-      id: 5,
-      title: "Puhke- ja virgestuse maa-ala (PV)",
-      popupTemplate: {
-        title: "Puhke- ja virgestuse maa-ala"
-      }
-    },
-    {
-      id: 6,
-      title: "Haljasala ja parkmetsa maa-ala (HM)",
-      popupTemplate: {
-        title: "Haljasala ja parkmetsa maa-ala"
-      }
-    },
-    {
-      id: 7,
-      title: "Ühiskondliku hoone maa-ala (AA)",
-      popupTemplate: {
-        title: "Ühiskondliku hoone maa-ala"
-      }
-    },
-    {
-      id: 8,
-      title: "Kaubandus-, teenindus-, büroohoone maa-ala (Ä)",
-      popupTemplate: {
-        title: "Kaubandus-, teenindus-, büroohoone maa-ala"
-      }
-    },
-    {
-      id: 9,
-      title: "Kalmistu maa-ala (K)",
-      popupTemplate: {
-        title: "Kalmistu maa-ala"
-      }
-    },
-    {
-      id: 11,
-      title: "Kaubandus-, teenindus- ja büroohoone ning ühiskondliku hoone maa-ala (Ä/AA)",
-      popupTemplate: {
-        title: "Kaubandus-, teenindus- ja büroohoone ning ühiskondliku hoone maa-ala"
-      }
-    },
-    {
-      id: 12,
-      title: "Kaubandus-, teenindus- ja büroohoone ning korterelamu maa-ala (Ä/EK)",
-      popupTemplate: {
-        title: "Kaubandus-, teenindus- ja büroohoone ning korterelamu maa-ala"
-      }
-    },
-    {
-      id: 13,
-      title: "Äri- ja teenindusettevõtte ning tootmis- ja logistikakeskuse maa-ala (ÄT)",
-      popupTemplate: {
-        title: "Äri- ja teenindusettevõtte ning tootmis- ja logistikakeskuse maa-ala"
-      }
-    }]
-  });
-
-  var Ettepanekud = new MapImageLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Saku_ÜP/Saku_vald_maakasutus/MapServer",
-    title: "Protsessi käigus esitatud ettepanekud maakasutuse määramiseks",
-    listMode: "hide-children",
-    visible: true,
-    opacity: 1,
-    sublayers: [
-    {
-      id: 17,
-      title: " ",
-      popupTemplate: {
-        title: "Ettepanek: {Sisu}"
-      }
-    }]
-  });
-
-  var Katastripiirid = new MapImageLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Saku_ÜP/Saku_ÜP_katastripiirid/MapServer",
-    title: "Katastriüksuste piirid",
-    listMode: "hide",
-    visible: false,
-    legendEnabled: false,
-    opacity: 1,
-    sublayers: [
-    {
-      id: 0,
-      title: " ",
-      popupTemplate: {
-        title: "{L_AADRESS}",
-        content: "Tunnus: {TUNNUS}"
-      }
-    }]
-  });
-
-  const KatasterWms = new WMSLayer ({
-    url: "https://kaart.maaamet.ee/wms/alus?service=WMS&version=1.3.0&request=GetCapabilities",
-    title: "Katastriüksused",
-    listMode: "hide-children",
-    visible: true,
-    sublayers: [{
-      name: "TOPOYKSUS_6569"
-    },
-    {
-      name: "TOPOYKSUS_6571"
-    }]
-  });
-
-  var Planeeritav = new MapImageLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Saku_ÜP/Saku_ÜP_muu_planeeritav/MapServer",
-    title: "Üldplaneeringuga kavandatav",
-    visible: true,
-    minScale: 50000,
-    sublayers: [
-    /*{
-      id: 39,
-      title: "Väärtuslik põllumaa maakonnaplaneeringust",
-      popupTemplate: {
-        title: "Väärtuslik põllumaa maakonnaplaneeringust"
-      }
-    },*/
-    {
-      id: 38,
-      title: "Väärtuslik põllumaa",
-      popupTemplate: {
-        title: "Väärtuslik põllumaa"
-      }
-    },
-    {
-      id: 36,
-      title: "Rohelise võrgustiku koridor",
-      popupTemplate: {
-        title: "Rohelise võrgustiku koridor"
-      }
-    },
-    {
-      id: 37,
-      title: "Rohelise võrgustiku tuumala",
-      popupTemplate: {
-        title: "Rohelise võrgustiku tuumala"
-      }
-    },
-    {
-      id: 35,
-      title: "Rohelise võrgustiku konfliktala",
-      popupTemplate: {
-        title: "Rohelise võrgustiku konfliktala"
-      }
-    },
-    {
-      id: 46,
-      title: "Miljööväärtuslik hoonestusala",
-      popupTemplate: {
-        title: "Miljööväärtuslik hoonestusala"
-      }
-    },
-    {
-      id: 53,
-      title: "Hoonestuseks sobimatu ala",
-      popupTemplate: {
-        title: "Hoonestuseks sobimatu ala"
-      }
-    },
-    {
-      id: 45,
-      title: "Avatud loodusmaastikuga ala",
-      popupTemplate: {
-        title: "Avatud loodusmaastikuga ala"
-      }
-    },
-    {
-      id: 34,
-      title: "Perspektiivne raudtee",
-      popupTemplate: {
-        title: "Perspektiivne raudtee"
-      }
-    },
-    {
-      id: 33,
-      title: "Riigikaitselise ehitise piiranguvöönd",
-      popupTemplate: {
-        title: "Riigikaitselise ehitise piiranguvöönd"
-      }
-    },
-    {
-      id: 32,
-      title: "Kalmistu maa-ala kaitsevöönd",
-      popupTemplate: {
-        title: "Kalmistu maa-ala kaitsevöönd"
-      }
-    },
-    {
-      id: 31,
-      title: "Planeeringuga määratud perspektiivne või rekonstrueeritav põhimõtteline raudteekoridor",
-      popupTemplate: {
-        title: "Planeeringuga määratud perspektiivne või rekonstrueeritav põhimõtteline raudteekoridor"
-      }
-    },
-    {
-      id: 30,
-      title: "Planeeringuga määratud perspektiivne või rekonstrueeritav, sh oluliselt muudetav põhimõtteline maanteekoridor",
-      popupTemplate: {
-        title: "Planeeringuga määratud perspektiivne või rekonstrueeritav, sh oluliselt muudetav põhimõtteline maanteekoridor"
-      }
-    },
-    {
-      id: 29,
-      title: "Planeeringuga määratud perspektiivne põhimõtteline raudtee- ja maanteekoridor",
-      popupTemplate: {
-        title: "Planeeringuga määratud perspektiivne põhimõtteline raudtee- ja maanteekoridor"
-      }
-    },
-    {
-      id: 28,
-      title: "Perspektiivne tee",
-      popupTemplate: {
-        title: "Perspektiivne tee"
-      }
-    },
-    /*{
-      id: 27,
-      title: "Kergliiklustee",
-      popupTemplate: {
-        title: "Kergliiklustee"
-      }
-    },*/
-    {
-      id: 26,
-      title: "Perspektiivne kergliiklustee",
-      popupTemplate: {
-        title: "Perspektiivne kergliiklustee"
-      }
-    },
-    {
-      id: 25,
-      title: "Suusa-matkarada",
-      popupTemplate: {
-        title: "Suusa-matkarada"
-      }
-    },
-    {
-      id: 47,
-      title: "Tallinna lähiala rohelise võrgustiku piir",
-      popupTemplate: {
-        title: "Tallinna lähiala rohelise võrgustiku piir"
-      }
-    },
-    {
-      id: 48,
-      title: "Ehituskeeluvööndi vähendamise ettepanek",
-      popupTemplate: {
-        title: "Ehituskeeluvööndi vähendamise ettepanek"
-      }
-    },
-    {
-      id: 53,
-      title: "Asustusüksuse piiri muudatusettepanek",
-      popupTemplate: {
-        title: "Asustusüksuse piiri muudatusettepanek"
-      }
-    },
-    {
-      id: 49,
-      title: "Jalakäijate peatänav",
-      popupTemplate: {
-        title: "Jalakäijate peatänav"
-      }
-    },
-    {
-      id: 50,
-      title: "Promenaad",
-      popupTemplate: {
-        title: "Promenaad"
-      }
-    },
-    {
-      id: 24,
-      opacity: 0.6,
-      title: "Planeeringuga määratud Rail Baltic raudtee trassi nihutamisruum",
-      popupTemplate: {
-        title: "Planeeringuga määratud Rail Baltic raudtee trassi nihutamisruum"
-      }
-    },
-    {
-      id: 23,
-      title: "Rail Baltic raudtee trassi kaitsevöönd",
-      popupTemplate: {
-        title: "Rail Baltic raudtee trassi kaitsevöönd"
-      }
-    },
-    {
-      id: 22,
-      title: "Rail Baltic raudtee trassi telgjoon",
-      popupTemplate: {
-        title: "Rail Baltic raudtee trassi telgjoon"
-      }
-    },
-    {
-      id: 21,
-      title: "Eritasandiline ristumine teega/rööbasteega",
-      popupTemplate: {
-        title: "Eritasandiline ristumine teega/rööbasteega"
-      }
-    },
-    {
-      id: 20,
-      title: "Eritasandiline ristumine perspektiivse teega",
-      popupTemplate: {
-        title: "Eritasandiline ristumine perspektiivse teega"
-      }
-    },
-    {
-      id: 19,
-      title: "Eritasandiline ristumine jalg- ja/või jalgrattateega",
-      popupTemplate: {
-        title: "Eritasandiline ristumine jalg- ja/või jalgrattateega"
-      }
-    },
-    {
-      id: 18,
-      title: "Eritasandiline ristumine vooluveekoguga",
-      popupTemplate: {
-        title: "Eritasandiline ristumine vooluveekoguga"
-      }
-    },
-    {
-      id: 17,
-      title: "Müra leevendusvajadusega alad",
-      popupTemplate: {
-        title: "Müra leevendusvajadusega alad"
-      }
-    },
-    {
-      id: 16,
-      title: "Rail Baltic raudtee ehitamisest tingitud kavandatav/ümberehitatav tee",
-      popupTemplate: {
-        title: "Rail Baltic raudtee ehitamisest tingitud kavandatav/ümberehitatav tee"
-      }
-    },
-    /*{
-      id: 15,
-      title: "Planeeringuga määratud perspektiivne põhimõtteline gaasitrassi koridor",
-      popupTemplate: {
-        title: "Planeeringuga määratud perspektiivne põhimõtteline gaasitrassi koridor"
-      }
-    },*/
-    {
-      id: 14,
-      title: "Planeeringuga määratud perspektiivne põhimõtteline kõrgepingeliini koridor",
-      popupTemplate: {
-        title: "Planeeringuga määratud perspektiivne põhimõtteline kõrgepingeliini koridor"
-      }
-    },
-    {
-      id: 13,
-      title: "Perspektiivne kergliiklustee riste",
-      popupTemplate: {
-        title: "Perspektiivne kergliiklustee riste"
-      }
-    },
-    {
-      id: 12,
-      title: "Eritasandiline liiklussõlm",
-      popupTemplate: {
-        title: "Eritasandiline liiklussõlm"
-      }
-    },
-    /*{
-      id: 11,
-      title: "Olemasolev kergliiklustee riste",
-      popupTemplate: {
-        title: "Olemasolev kergliiklustee riste"
-      }
-    },
-    {
-      id: 52,
-      title: "Ohtlike ettevõtete ohuala",
-      popupTemplate: {
-        title: "Ohtlike ettevõtete ohuala"
-      }
-    },
-    {
-      id: 51,
-      title: "Ohtlikud ettevõtted",
-      popupTemplate: {
-        title: "Ohtlik ettevõte"
-      }
-    },
-    {
-      id: 10,
-      title: "Olemasolev kergliiklussild",
-      popupTemplate: {
-        title: "Olemasolev kergliiklussild"
-      }
-    },*/
-    {
-      id: 9,
-      title: "Perspektiivne kergliiklussild",
-      popupTemplate: {
-        title: "Perspektiivne kergliiklussild"
-      }
-    },
-    {
-      id: 8,
-      title: "Suurimetajate läbipääsu piirkond",
-      popupTemplate: {
-        title: "Suurimetajate läbipääsu piirkond"
-      }
-    },
-    {
-      id: 7,
-      title: "Ökodukti eeldatav asukoht",
-      popupTemplate: {
-        title: "Ökodukti eeldatav asukoht"
-      }
-    },
-    {
-      id: 6,
-      title: "Perspektiivne loomatunnel",
-      popupTemplate: {
-        title: "Perspektiivne loomatunnel"
-      }
-    },
-    {
-      id: 5,
-      title: "Perspektiivne kohalik peatus Rail Baltic trassil",
-      popupTemplate: {
-        title: "Perspektiivne kohalik peatus Rail Baltic trassil"
-      }
-    },
-    {
-      id: 4,
-      title: "Perspektiivne rongipeatus",
-      popupTemplate: {
-        title: "Perspektiivne rongipeatus"
-      }
-    },
-    /*{
-      id: 3,
-      title: "Olemasolev rongipeatus",
-      popupTemplate: {
-        title: "Olemasolev rongipeatus"
-      }
-    },*/
-    {
-      id: 2,
-      title: "Likvideeritav juurdepääs",
-      popupTemplate: {
-        title: "Likvideeritav juurdepääs"
-      }
-    },
-    {
-      id: 1,
-      title: "Kaitsehaljastus",
-      popupTemplate: {
-        title: "Kaitsehaljastus"
-      }
-    },
-    {
-      id: 0,
-      title: "Perspektiivne autosild",
-      popupTemplate: {
-        title: "Perspektiivne autosild"
-      }
-    },
-    {
-      id: 40,
-      title: "Perspektiivne supelrand",
-      popupTemplate: {
-        title: "Perspektiivne supelrand"
-      }
-    },
-    {
-      id: 41,
-      title: "Perspektiivne supluskoht",
-      popupTemplate: {
-        title: "Perspektiivne supluskoht"
-      }
-    },
-    {
-      id: 42,
-      title: "Perspektiivne kompostimisväljak",
-      popupTemplate: {
-        title: "Perspektiivne kompostimisväljak"
-      }
-    },
-    /*{
-      id: 44,
-      title: "Jäätmepunkt",
-      popupTemplate: {
-        title: "Jäätmepunkt"
-      }
-    },*/
-    {
-      id: 43,
-      title: "Perspektiivne jäätmepunkt",
-      popupTemplate: {
-        title: "Perspektiivne jäätmepunkt"
-      }
-    }]
-  });
-
-  var VäärtPõllumaa = new MapImageLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Saku_ÜP/Saku_ÜP_muu_planeeritav/MapServer",
-    title: "Väärtuslike põllumajandusmaade kiht maakonnaplaneeringust",
-    listMode: "hide-children",
-    visible: true,
-    minScale: 50000,
-    sublayers: [
-    {
-      id: 39,
-      title: " ",
-      popupTemplate: {
-        title: "Väärtuslik põllumaa maakonnaplaneeringust"
-      }
-    }]
-  });
-
-  var Mask = new MapImageLayer({
-    url: "https://maps.hendrikson.ee/arcgis/rest/services/Saku_ÜP/Saku_vald_maakasutus/MapServer",
-    title: " ",
-    legendEnabled: false,
-    listMode: "hide",
-    visible: true,
-    sublayers: [
-    {
-      id: 1,
-      title: "Mask",
-      opacity: 0.6
-    }]
-  });
-
-  var Wms = new WMSLayer ({
+  var Fotokaart = new WMSLayer ({
     url: "https://kaart.maaamet.ee/wms/fotokaart?service=WMS&version=1.3.0&request=GetCapabilities",
     title: "Ortofoto",
     listMode: "hide-children",
-    visible: false,
-    sublayers: [{
+    visible: true,
+    opacity: 0.8,
+    sublayers: [
+    {
+      name: "HYB_pohimnt_nr"
+    },
+    {
+      name: "HYB_tugimnt_nr"
+    },
+    {
+      name: "HYB_korvalmnt_nr"
+    },
+    {
+      name: "HYB_mnt_nimed_asulates"
+    },
+    {
+      name: "HYB_pohimnt"
+    },
+    {
+      name: "HYB_tugimnt"
+    },
+    {
+      name: "HYB_korvalmnt"
+    },
+    {
       name: "EESTIFOTO"
     }]
   });
 
+  var basemap2 = new Basemap({
+    baseLayers: [Fotokaart],
+    title: "Ortofoto"
+  });
 
-  map.add(Wms);
-  map.add(VäärtPõllumaa)
-  map.add(Maakasutus);
-  map.add(Katastripiirid);
-  map.add(KatasterWms);
-  map.add(Tiheasustus);
-  map.add(Planeeritav);
-  map.add(Ettepanekud);
-  map.add(Mask);
-  map.add(Vallapiir);
+  on(dojo.query("#aluskaart"), "click", function() {
+    if (map.basemap === basemap) {
+      map.basemap = basemap2
+    } else {
+      map.basemap = basemap
+    }
+  });
+
+  const Ohtl1 = {
+    type: "simple-line", // autocasts as new SimpleLineSymbol()
+    color: "#c400c6",
+    width: "3px",
+    style: "solid"
+  };
+
+  const Ohtl2 = {
+    type: "simple-line", // autocasts as new SimpleLineSymbol()
+    color: "#57007e",
+    width: "3px",
+    style: "solid"
+  };
+
+  const Ohtl3 = {
+    type: "simple-line", // autocasts as new SimpleLineSymbol()
+    color: "#090057",
+    width: "3px",
+    style: "solid"
+  };
+
+  const LooduslikudRenderer = {
+    type: "unique-value",
+    legendOptions: {
+      title: "Teelõigu ohtlikkus"
+    },
+    field: "Seletus",
+    uniqueValueInfos: [
+      {
+        value: "Üle keskmise ohtlik teelõik",
+        symbol: Ohtl1,
+        label: "Üle keskmise ohtlik teelõik"
+      },
+      {
+        value: "Kõrge ohuga teelõik",
+        symbol: Ohtl2,
+        label: "Kõrge ohuga teelõik"
+      },
+      {
+        value: "Väga ohtlik teelõik",
+        symbol: Ohtl3,
+        label: "Väga ohtlik teelõik"
+      }
+    ]
+  };
+
+  var Looduslikud = new FeatureLayer({
+    url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/2",
+    title: "Looduslike ohutegurite analüüs",
+    visible: false,
+    renderer: LooduslikudRenderer
+  });
+
+  const PunktiRenderer = {
+    type: "simple",
+    field: "Strength",
+    symbol: {
+      type: "simple-marker",
+      color: "orange",
+      outline: {
+        color: "white"
+      }
+    },
+    visualVariables: [
+      {
+        type: "size",
+        field: "Strength",
+        stops: [
+          {
+            value: 0.2,
+            size: "6px"
+          },
+          {
+            value: 0.4,
+            size: "10px"
+          },
+          {
+            value: 0.5,
+            size: "20px"
+          },
+          {
+            value: 0.6,
+            size: "30px"
+          },
+          {
+            value: 0.7,
+            size: "40px"
+          }
+        ]
+      },
+      {
+        type: "color",
+        field: "Strength",
+        stops: [
+          {
+            value: 0.2,
+            color: "#a4f6a5"
+          },
+          {
+            value: 0.4,
+            color: "#a4f6a5"
+          },
+          {
+            value: 0.5,
+            color: "#f1eb9a"
+          },
+          {
+            value: 0.6,
+            color: "#f8a978"
+          },
+          {
+            value: 0.7,
+            color: "#f68787"
+          }
+        ]
+      }
+    ]
+  };
+
+  var Klastripunktid = new FeatureLayer({
+    url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/0",
+    title: "Statistiliselt olulised klastrid",
+    maxScale: 70000,
+    renderer: PunktiRenderer
+  });
+
+  var Klastrijooned = new FeatureLayer({
+    url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/1",
+    title: "Statistiliselt olulised klastrid",
+    minScale: 70000
+  });
+
+  var Klastrid = new GroupLayer({
+    title: "KDE+ analüüsi tulemused",
+    layers: [Klastrijooned, Klastripunktid],
+    listMode: "hide-children"
+  });
+
+  map.add(Looduslikud);
+  map.add(Klastrid);
 
   view.ui.move("zoom", "top-right");
 
@@ -863,5 +428,6 @@ require([
     if (selectedButton) {
       selectedButton.classList.add("active-mõõtmine");
     }
-  }
+  };
+
 });
