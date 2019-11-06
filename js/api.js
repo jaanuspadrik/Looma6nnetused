@@ -185,6 +185,9 @@ require([
       {
         type: "size",
         field: "Strength",
+        legendOptions: {
+          title: "Klastri tugevus"
+        },
         stops: [
           {
             value: 0.2,
@@ -211,6 +214,9 @@ require([
       {
         type: "color",
         field: "Strength",
+        legendOptions: {
+          title: "Klastri tugevus"
+        },
         stops: [
           {
             value: 0.2,
