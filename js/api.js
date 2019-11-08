@@ -48,13 +48,19 @@ require([
   var view = new MapView({
     container: "viewDiv",
     map: map,
-    scale: 1100000,
     spatialReference: {
       wkid: 3301
     },
+    extent: {
+      xmin: 6617000,
+      ymin: 375500,
+      xmax: 6378500,
+      ymax: 737000,
+      spatialReference: 3301
+    },
     center: {
       y: 6499875,
-      x: 527000,
+      x: 507000,
       spatialReference: 3301
     }
   });
@@ -190,25 +196,25 @@ require([
         },
         stops: [
           {
-            value: 0.2,
-            size: "6px"
-          },
-          {
-            value: 0.4,
-            size: "10px"
-          },
-          {
-            value: 0.5,
-            size: "20px"
+            value: 0.7,
+            size: "40px"
           },
           {
             value: 0.6,
             size: "30px"
           },
           {
-            value: 0.7,
-            size: "40px"
-          }
+            value: 0.5,
+            size: "20px"
+          },
+          {
+            value: 0.4,
+            size: "10px"
+          },
+          {
+            value: 0.2,
+            size: "6px"
+          },
         ]
       },
       {
@@ -219,24 +225,24 @@ require([
         },
         stops: [
           {
-            value: 0.2,
-            color: "#a4f6a5"
-          },
-          {
-            value: 0.4,
-            color: "#a4f6a5"
-          },
-          {
-            value: 0.5,
-            color: "#f1eb9a"
+            value: 0.7,
+            color: "#f68787"
           },
           {
             value: 0.6,
             color: "#f8a978"
           },
           {
-            value: 0.7,
-            color: "#f68787"
+            value: 0.5,
+            color: "#f1eb9a"
+          },
+          {
+            value: 0.4,
+            color: "#a4f6a5"
+          },
+          {
+            value: 0.2,
+            color: "#a4f6a5"
           }
         ]
       }
