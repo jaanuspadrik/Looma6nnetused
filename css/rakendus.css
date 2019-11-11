@@ -161,6 +161,19 @@ margin: 10px 0
   border: 2px solid #5f7778
 }
 
+.esri-popup__pointer {
+  display: none
+}
+
+.esri-popup__main-container {
+  width: 300px;
+  height: 120px
+}
+
+.esri-popup__header, .esri-popup__footer {
+  display: none
+}
+
 h1 {
   color: black;
   font-size: 35px;

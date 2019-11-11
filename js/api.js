@@ -329,22 +329,22 @@ require([
     ]
   };
 
-  function klastriPopup(feature) {
+  function klastriPopup(result) {
     var värviValik = function(){
-      if (feature.graphic.attributes.strength <= 0.2) {
+      if (result.graphic.attributes.strength <= 0.2) {
         return "rgb(0, 97, 0)"
-      } else if (feature.graphic.attributes.strength > 0.2 && feature.graphic.attributes.strength <= 0.4) {
+      } else if (result.graphic.attributes.strength > 0.2 && result.graphic.attributes.strength <= 0.4) {
         return "rgb(122, 171, 0)"
-      } else if (feature.graphic.attributes.strength > 0.4 && feature.graphic.attributes.strength <= 0.5) {
+      } else if (result.graphic.attributes.strength > 0.4 && result.graphic.attributes.strength <= 0.5) {
         return "rgb(255, 255, 0)"
-      } else if (feature.graphic.attributes.strength > 0.5 && feature.graphic.attributes.strength <= 0.6) {
+      } else if (result.graphic.attributes.strength > 0.5 && result.graphic.attributes.strength <= 0.6) {
         return "rgb(255, 153, 0)"
       } else {
         return "rgb(255, 34, 0)"
       }
     }
     return (
-      "<span style='line-height: 1.6;'><h4 style='font-size: 1.1rem'>Loomaõnnetuste klaster</h4>Klastri tugevus: " + "<span style='border-bottom: 3px solid " + (värviValik()) + ";'>" + "{Strength}</span>" + "<br>Hukkunud loomi klastris: {NPts_clus}<br>" + "Klastri pikkus: {Len_clus} m</span>"
+      "<span style='line-height: 1.6;'><h4 style='font-size: 1.1rem'>Loomaõnnetuste klaster</h4>Klastri tugevus: " + "<span style='border-bottom: 3px solid " + (värviValik()) + ";'>" + result.graphic.attributes.strength + "</span>" + "<br>Hukkunud loomi klastris: " + result.graphic.attributes.npts_clus + "<br>" + "Klastri pikkus: " + result.graphic.attributes.len_clus + " m</span>"
     );
   }
 
@@ -440,20 +440,6 @@ require([
   //Kursoriga info klastri kohta
 
   view.when().then(function() {
-    // Create a default graphic for when the application starts
-    const graphic = {
-      popupTemplate: {
-        content: "Liigu kursoriga üle huvipakkuva klastri"
-      }
-    };
-
-    // Provide graphic to a new instance of a Feature widget
-    const feature = new Feature({
-      graphic: graphic,
-      view: view,
-      container: "klastriinfo"
-    });
-
     let cursorMove = function(layerView) {
       let highlight;
       // listen for the pointer-move event on the View
@@ -468,10 +454,10 @@ require([
           // Update the graphic of the Feature widget
           // on pointer-move with the result
           if (result) {
-            feature.graphic = result.graphic;
+            view.popup.content = (result.graphic.layer.popupTemplate.content(result));
+            view.popup.location = result.graphic.geometry;
+            view.popup.open();
             highlight = layerView.highlight(result.graphic);
-          } else {
-            feature.graphic = graphic;
           }
         });
       });
