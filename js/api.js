@@ -14,18 +14,20 @@ require([
   "esri/widgets/LayerList",
   "esri/widgets/Fullscreen",
   "esri/widgets/Search",
+  "esri/widgets/Feature",
   "esri/tasks/Locator",
   "esri/widgets/Home",
   "esri/widgets/DistanceMeasurement2D",
   "esri/widgets/AreaMeasurement2D",
   "esri/widgets/BasemapToggle",
   "esri/geometry/Extent",
+  "esri/widgets/Slider",
   "esri/config",
   "dojo/dom",
   "dojo/query",
   "dojo/on",
   "dojo/domReady!"
-], function(Map, Basemap, WebMap, MapView, VectorTileLayer, MapImageLayer, FeatureLayer, WMSLayer, GroupLayer, PopupTemplate, Legend, Expand, LayerList, Fullscreen, Search, Locator, Home, DistanceMeasurement2D, AreaMeasurement2D, BasemapToggle, Extent, esriConfig, dom, query, on) {
+], function(Map, Basemap, WebMap, MapView, VectorTileLayer, MapImageLayer, FeatureLayer, WMSLayer, GroupLayer, PopupTemplate, Legend, Expand, LayerList, Fullscreen, Search, Feature, Locator, Home, DistanceMeasurement2D, AreaMeasurement2D, BasemapToggle, Extent, Slider, esriConfig, dom, query, on) {
 
   //esriConfig.portalUrl = "https://maps.hendrikson.ee/arcgis/";
 
@@ -105,6 +107,12 @@ require([
     },
     {
       name: "HYB_korvalmnt"
+    },
+    {
+      name: "HYB_kontrolljoon"
+    },
+    {
+      name: "HYB_halduspiirid_4m"
     },
     {
       name: "EESTIFOTO"
@@ -190,31 +198,31 @@ require([
     visualVariables: [
       {
         type: "size",
-        field: "Strength",
+        field: "NPts_clus",
         legendOptions: {
-          title: "Klastri tugevus"
+          title: "Hukkunud loomi klastris"
         },
         stops: [
           {
-            value: 0.7,
-            size: "40px"
-          },
-          {
-            value: 0.6,
+            value: 15,
+            label: ">15",
             size: "30px"
           },
           {
-            value: 0.5,
-            size: "20px"
+            value: 10,
+            label: "5-10",
+            size: "25px"
           },
           {
-            value: 0.4,
+            value: 5,
+            label: "2-5",
+            size: "17px"
+          },
+          {
+            value: 2,
+            label: "<2",
             size: "10px"
-          },
-          {
-            value: 0.2,
-            size: "6px"
-          },
+          }
         ]
       },
       {
@@ -225,46 +233,166 @@ require([
         },
         stops: [
           {
-            value: 0.7,
-            color: "#f68787"
-          },
-          {
-            value: 0.6,
-            color: "#f8a978"
-          },
-          {
-            value: 0.5,
-            color: "#f1eb9a"
+            value: 0.2,
+            color: "rgb(0, 97, 0)"
           },
           {
             value: 0.4,
-            color: "#a4f6a5"
+            color: "rgb(122, 171, 0)"
           },
           {
-            value: 0.2,
-            color: "#a4f6a5"
+            value: 0.5,
+            color: "rgb(255, 255, 0)"
+          },
+          {
+            value: 0.6,
+            color: "rgb(255, 153, 0)"
+          },
+          {
+            value: 0.7,
+            color: "rgb(255, 34, 0)"
           }
         ]
       }
     ]
   };
 
+  const JooneRenderer = {
+    type: "simple",
+    field: "Strength",
+    symbol: {
+      type: "simple-line",
+      color: "orange",
+      outline: {
+        color: "white"
+      }
+    },
+    visualVariables: [
+      {
+        type: "size",
+        field: "NPts_clus",
+        legendOptions: {
+          title: "Hukkunud loomi klastris"
+        },
+        stops: [
+          {
+            value: 15,
+            label: ">15",
+            size: "11px"
+          },
+          {
+            value: 10,
+            label: "5-10",
+            size: "9px"
+          },
+          {
+            value: 5,
+            label: "2-5",
+            size: "7px"
+          },
+          {
+            value: 2,
+            label: "<2",
+            size: "5px"
+          }
+        ]
+      },
+      {
+        type: "color",
+        field: "Strength",
+        legendOptions: {
+          title: "Klastri tugevus"
+        },
+        stops: [
+          {
+            value: 0.2,
+            color: "rgb(0, 97, 0)"
+          },
+          {
+            value: 0.4,
+            color: "rgb(122, 171, 0)"
+          },
+          {
+            value: 0.5,
+            color: "rgb(255, 255, 0)"
+          },
+          {
+            value: 0.6,
+            color: "rgb(255, 153, 0)"
+          },
+          {
+            value: 0.7,
+            color: "rgb(255, 34, 0)"
+          }
+        ]
+      }
+    ]
+  };
+
+  function klastriPopup(feature) {
+    var värviValik = function(){
+      if (feature.graphic.attributes.strength <= 0.2) {
+        return "rgb(0, 97, 0)"
+      } else if (feature.graphic.attributes.strength > 0.2 && feature.graphic.attributes.strength <= 0.4) {
+        return "rgb(122, 171, 0)"
+      } else if (feature.graphic.attributes.strength > 0.4 && feature.graphic.attributes.strength <= 0.5) {
+        return "rgb(255, 255, 0)"
+      } else if (feature.graphic.attributes.strength > 0.5 && feature.graphic.attributes.strength <= 0.6) {
+        return "rgb(255, 153, 0)"
+      } else {
+        return "rgb(255, 34, 0)"
+      }
+    }
+    return (
+      "<span style='line-height: 1.6;'><h4 style='font-size: 1.1rem'>Loomaõnnetuste klaster</h4>Klastri tugevus: " + "<span style='border-bottom: 3px solid " + (värviValik()) + ";'>" + "{Strength}</span>" + "<br>Hukkunud loomi klastris: {NPts_clus}<br>" + "Klastri pikkus: {Len_clus} m</span>"
+    );
+  }
+
   var Klastripunktid = new FeatureLayer({
     url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/0",
     title: "Statistiliselt olulised klastrid",
     maxScale: 70000,
-    renderer: PunktiRenderer
+    renderer: PunktiRenderer,
+    definitionExpression: "Strength > 0.1",
+    opacity: 0.8,
+    popupTemplate: {
+      content: klastriPopup,
+      outFields: ["Strength", "NPts_clus", "Len_clus"],
+      fieldInfos: [{
+        fieldName: "Strength",
+        format: {
+          places: 2
+        }
+      }]
+    }
   });
 
   var Klastrijooned = new FeatureLayer({
     url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/1",
     title: "Statistiliselt olulised klastrid",
-    minScale: 70000
+    minScale: 70000,
+    renderer: JooneRenderer,
+    definitionExpression: "Strength > 0.1",
+    popupTemplate: {
+      content: klastriPopup,
+      fieldInfos: [{
+        fieldName: "Strength",
+        format: {
+          places: 2
+        }
+      },
+      {
+        fieldName: "Len_clus",
+        format: {
+          places: 0
+        }
+      }]
+    }
   });
 
   var Klastrid = new GroupLayer({
     title: "KDE+ analüüsi tulemused",
-    layers: [Klastrijooned, Klastripunktid],
+    layers: [Klastripunktid, Klastrijooned],
     listMode: "hide-children"
   });
 
@@ -272,6 +400,79 @@ require([
   map.add(Klastrid);
 
   view.ui.move("zoom", "top-right");
+
+  //Slider
+
+  let selectedStrength = 0.1;
+  const strengthSlider = new Slider({
+    container: "slider",
+    min: 0,
+    max: 0.8,
+    steps: 0.05,
+    values: [selectedStrength],
+    snapOnClickEnabled: false
+  });
+
+  Klastrid.when(function() {
+    strengthSlider.on(["thumb-drag"], strengthValueChanged);
+
+    function strengthValueChanged(event) {
+      selectedStrength = event.value;
+      document.getElementById(
+        "strength-display"
+      ).innerHTML = selectedStrength.toLocaleString();
+      // update the layers after the user stops the slider to avoid continues requests
+
+      if (event.state === "stop") {
+        Klastripunktid.definitionExpression = "Strength > " + selectedStrength;
+        Klastrijooned.definitionExpression = "Strength > " + selectedStrength;
+      }
+    }
+  });
+
+  //Kursoriga info klastri kohta
+
+  view.when().then(function() {
+    // Create a default graphic for when the application starts
+    const graphic = {
+      popupTemplate: {
+        content: "Liigu kursoriga üle huvipakkuva klastri"
+      }
+    };
+
+    // Provide graphic to a new instance of a Feature widget
+    const feature = new Feature({
+      graphic: graphic,
+      view: view,
+      container: "klastriinfo"
+    });
+
+    let cursorMove = function(layerView) {
+      let highlight;
+      // listen for the pointer-move event on the View
+      view.on("pointer-move", function(event) {
+        view.hitTest(event).then(function(event) {
+          // Make sure graphic has a popupTemplate
+          let results = event.results.filter(function(result) {
+            console.log(result);
+            return result.graphic.layer.popupTemplate;
+          });
+          let result = results[0];
+          highlight && highlight.remove();
+          // Update the graphic of the Feature widget
+          // on pointer-move with the result
+          if (result) {
+            feature.graphic = result.graphic;
+            highlight = layerView.highlight(result.graphic);
+          } else {
+            feature.graphic = graphic;
+          }
+        });
+      });
+    };
+    view.whenLayerView(Klastrijooned).then(cursorMove);
+    view.whenLayerView(Klastripunktid).then(cursorMove);
+  });
 
   var item;
   var layerList = new LayerList({
@@ -329,27 +530,7 @@ require([
     searchAllEnabled: false,
     includeDefaultSources: false,
     activeSourceIndex: 0,
-    sources: [{
-      featureLayer: {
-        url: "https://maps.hendrikson.ee/arcgis/rest/services/Saku_ÜP/Saku_ÜP_katastripiirid/MapServer/0",
-        resultGraphicEnabled: true,
-        resultSymbol: {
-          type: "polygon-3d",
-          color: "dodgerblue"
-        },
-        popupTemplate: {
-          title: "<h4>{L_AADRESS}</h4>",
-          content: "<b>Tunnus:</b> {TUNNUS}<br><b>Aadress:</b> {L_AADRESS}<br><b>Asustusüksus:</b> {AY_NIMI}<br><b>Sihtotstarve:</b> {SIHT1}<br><b>Omand:</b> {OMVORM}",
-          overwriteActions: true
-        }
-      },
-      searchFields: ["TUNNUS"],
-      displayField: "TUNNUS",
-      exactMatch: false,
-      outFields: ["*"],
-      name: "Otsi katastritunnuse järgi",
-      placeholder: "Sisesta katastritunnus",
-    },
+    sources: [
     {
     locator: new Locator("//geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"),
     singleLineFieldName: "SingleLine",
@@ -359,7 +540,7 @@ require([
       minScale: 300000,
       distance: 50000
     },
-    placeholder: "Sisesta aadress",
+    placeholder: "Sisesta kohanimi/aadress",
     resultSymbol: {
        type: "picture-marker",  // autocasts as new PictureMarkerSymbol()
        url: this.basePath + "/images/search/search-symbol-32.png",

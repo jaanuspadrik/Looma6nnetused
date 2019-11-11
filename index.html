@@ -24,10 +24,10 @@
       parseOnLoad: true
     };
   </script>
-  <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/css/main.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.13/esri/css/main.css">
   <link rel="stylesheet" href="css/rakendus.css">
   <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
-  <script src="https://js.arcgis.com/4.10/"></script>
+  <script src="https://js.arcgis.com/4.13/"></script>
   <script src="js/api.js"></script>
 </head>
 
@@ -52,6 +52,11 @@
     </div>
     <div class="ümbris">
       <div id="otsing"></div>
+      <div class="slider-container">
+        <p style="margin: 0">Näita klastreid tugevusega > <span id="strength-display">0,1</span></p>
+        <div id="slider"></div>
+      </div>
+      <div id="klastriinfo"></div>
       <a class="btn btn-secondary rounded-0" id="aluskaart"><i class="far fa-map"></i> Vaheta aluskaarti</a>
       <div id="viewDiv"></div>
       <!--<div id="mõõtkava">Mõõtkava 1: <span id="mõõtkavaNr"></span></div>-->
@@ -66,7 +71,7 @@
           <a class="menüü btn rounded-0" id="Kihid">KIHID</a>
         </div>
         <div class="küljepaneel">
-          <div class="mahuti-lisainfo">
+          <div id="mahuti-lisainfo" class="mahuti-lisainfo">
             <h4>Eesti riigimaanteede loomaohtlikkus</h4>
             <p>Kaardirakendus koosneb kihtidest, mida on võimalik alajaotuse "Kihid" alt ükshaaval sisse/välja lülitada.</p>
             <p>Pindala ja kaugust saab mõõta nuppudest ekraani paremas ülemises nurgas.</p>

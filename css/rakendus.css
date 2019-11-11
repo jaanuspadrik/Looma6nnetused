@@ -145,6 +145,10 @@ margin: 10px 0
   color: black
 }
 
+.esri-slider {
+  background-color: transparent
+}
+
 h1 {
   color: black;
   font-size: 35px;
@@ -155,6 +159,11 @@ h1 {
 h2 {
   color: black;
   letter-spacing: 0;
+}
+
+h4 {
+  margin: 5px 0;
+  padding: 0px
 }
 
 .nähtamatu {
@@ -168,6 +177,43 @@ h2 {
   top: 70px;
   left: 400px;
   z-index: 1
+}
+
+#klastriinfo {
+  position: fixed;
+  bottom: 20px;
+  left: 400px;
+  z-index: 1;
+  height: 150px;
+  width: 250px;
+  padding: 10px;
+  background-color: rgb(255, 255, 255);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.slider-container {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  top: 120px;
+  left: 400px;
+  padding: 10px 10px;
+  margin: 0;
+  z-index: 1;
+  height: 80px;
+  width: 300px;
+  background-color: rgb(255, 255, 255);
+}
+
+#slider {
+  height: 40px;
+  margin: 20px 0
+}
+
+#strength-display {
+  font-weight: bold;
 }
 
 #aluskaart {
