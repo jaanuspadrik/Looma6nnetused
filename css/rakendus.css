@@ -133,7 +133,7 @@ body, .popover {
 margin: 10px 0
 }
 
-.esri-search__sources-menu {
+.esri-search__suggestions-menu {
   margin: -10px 0
 }
 
@@ -147,6 +147,18 @@ margin: 10px 0
 
 .esri-slider {
   background-color: transparent
+}
+
+.esri-slider__thumb {
+  border: 2px solid #5f7778
+}
+
+.esri-slider__thumb:hover {
+  border: 2px solid #5f7778
+}
+
+.esri-slider__anchor--moving:focus .esri-slider__thumb {
+  border: 2px solid #5f7778
 }
 
 h1 {
@@ -174,7 +186,7 @@ h4 {
 
 #otsing {
   position: absolute;
-  top: 70px;
+  top: 165px;
   left: 400px;
   z-index: 1
 }
@@ -185,7 +197,7 @@ h4 {
   left: 400px;
   z-index: 1;
   height: 150px;
-  width: 250px;
+  width: 300px;
   padding: 10px;
   background-color: rgb(255, 255, 255);
   font-size: 1.1rem;
@@ -197,7 +209,7 @@ h4 {
   display: flex;
   flex-direction: column;
   text-align: center;
-  top: 120px;
+  top: 70px;
   left: 400px;
   padding: 10px 10px;
   margin: 0;
