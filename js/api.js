@@ -351,17 +351,23 @@ require([
   var Klastripunktid = new FeatureLayer({
     url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/0",
     title: "Statistiliselt olulised klastrid",
+    outFields: ["*"],
     maxScale: 70000,
     renderer: PunktiRenderer,
     definitionExpression: "Strength > 0.1",
     opacity: 0.8,
     popupTemplate: {
       content: klastriPopup,
-      outFields: ["Strength", "NPts_clus", "Len_clus"],
       fieldInfos: [{
         fieldName: "Strength",
         format: {
           places: 2
+        }
+      },
+      {
+        fieldName: "Len_clus",
+        format: {
+          places: 0
         }
       }]
     }
@@ -370,6 +376,7 @@ require([
   var Klastrijooned = new FeatureLayer({
     url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/1",
     title: "Statistiliselt olulised klastrid",
+    outFields: ["*"],
     minScale: 70000,
     renderer: JooneRenderer,
     definitionExpression: "Strength > 0.1",
@@ -454,7 +461,6 @@ require([
         view.hitTest(event).then(function(event) {
           // Make sure graphic has a popupTemplate
           let results = event.results.filter(function(result) {
-            console.log(result);
             return result.graphic.layer.popupTemplate;
           });
           let result = results[0];
