@@ -161,6 +161,14 @@ margin: 10px 0
   border: 2px solid #5f7778
 }
 
+.esri-popup__header {
+  display: none
+}
+
+.esri-popup__main-container {
+  max-width: 300px
+}
+
 h1 {
   color: black;
   font-size: 35px;
