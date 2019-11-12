@@ -134,21 +134,21 @@ require([
 
   const Ohtl1 = {
     type: "simple-line", // autocasts as new SimpleLineSymbol()
-    color: "#c400c6",
+    color: "rgb(0, 245, 245)",
     width: "3px",
     style: "solid"
   };
 
   const Ohtl2 = {
     type: "simple-line", // autocasts as new SimpleLineSymbol()
-    color: "#57007e",
+    color: "rgb(0, 0, 245)",
     width: "3px",
     style: "solid"
   };
 
   const Ohtl3 = {
     type: "simple-line", // autocasts as new SimpleLineSymbol()
-    color: "#090057",
+    color: "rgb(245, 0, 245)",
     width: "3px",
     style: "solid"
   };
@@ -205,22 +205,22 @@ require([
         stops: [
           {
             value: 15,
-            label: ">15",
+            label: "15",
             size: "30px"
           },
           {
             value: 10,
-            label: "5-10",
+            label: "10",
             size: "25px"
           },
           {
             value: 5,
-            label: "2-5",
+            label: "5",
             size: "17px"
           },
           {
             value: 2,
-            label: "<2",
+            label: "2",
             size: "10px"
           }
         ]
@@ -277,22 +277,22 @@ require([
         stops: [
           {
             value: 15,
-            label: ">15",
+            label: "15",
             size: "11px"
           },
           {
             value: 10,
-            label: "5-10",
+            label: "10",
             size: "9px"
           },
           {
             value: 5,
-            label: "2-5",
+            label: "5",
             size: "7px"
           },
           {
             value: 2,
-            label: "<2",
+            label: "2",
             size: "5px"
           }
         ]
@@ -344,7 +344,14 @@ require([
       }
     }
     return (
-      "<span style='line-height: 1.6;'><h4 style='font-size: 1.1rem'>Loomaõnnetuste klaster</h4>Klastri tugevus: " + "<span style='border-bottom: 3px solid " + (värviValik()) + ";'>" + "{Strength}</span>" + "<br>Hukkunud loomi klastris: {NPts_clus}<br>" + "Klastri pikkus: {Len_clus} m</span>"
+      "<span style='line-height: 1.6;'><h4 style='font-size: 1.1rem'>Loomaõnnetuste klaster</h4>Klastri tugevus: "
+      + "<span style='border-bottom: 3px solid "
+      + (värviValik())
+      + ";'>"
+      + "{Strength}</span>"
+      + "<br>Hukkunud suurulukeid klastris: {NPts_clus}<br>"
+      + "Klastri pikkus: {Len_clus} m</span><br>"
+      + "{tee_nimi}<br>(Maantee nr {tee_number})"
     );
   }
 
@@ -352,7 +359,6 @@ require([
     url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/0",
     title: "Statistiliselt olulised klastrid",
     outFields: ["*"],
-    maxScale: 70000,
     renderer: PunktiRenderer,
     definitionExpression: "Strength > 0.1",
     opacity: 0.8,
@@ -369,6 +375,12 @@ require([
         format: {
           places: 0
         }
+      },
+      {
+        fieldName: "tee_number",
+        format: {
+          digitSeparator: false
+        }
       }]
     }
   });
@@ -377,7 +389,7 @@ require([
     url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/1",
     title: "Statistiliselt olulised klastrid",
     outFields: ["*"],
-    minScale: 70000,
+    visible: false,
     renderer: JooneRenderer,
     definitionExpression: "Strength > 0.1",
     popupTemplate: {
@@ -393,6 +405,12 @@ require([
         format: {
           places: 0
         }
+      },
+      {
+        fieldName: "tee_number",
+        format: {
+          digitSeparator: false
+        }
       }]
     }
   });
@@ -406,6 +424,15 @@ require([
   map.add(Looduslikud);
   map.add(Klastrid);
 
+  view.watch("scale", function(value){
+    if (value >= 70000) {
+      Klastrijooned.visible = false;
+      Klastripunktid.visible = true;
+    } else {
+      Klastrijooned.visible = true;
+      Klastripunktid.visible = false;
+    }
+  });
   view.ui.move("zoom", "top-right");
 
   //Slider
@@ -443,7 +470,7 @@ require([
     // Create a default graphic for when the application starts
     const graphic = {
       popupTemplate: {
-        content: "Liigu kursoriga üle huvipakkuva klastri"
+        content: "<span style='font-weight: bold'>Liigu kursoriga üle huvipakkuva klastri...</span>"
       }
     };
 
