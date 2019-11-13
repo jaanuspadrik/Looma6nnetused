@@ -91,7 +91,7 @@ body, .popover {
   background-color: transparent
 }
 .esri-layer-list__item {
-  font-weight: 600;
+  font-weight: 300;
   background-color: transparent;
   border-bottom: none;
   color: black
@@ -117,11 +117,21 @@ body, .popover {
 }
 
 .esri-icon-visible:before {
-  content: "☑";
+  display: block;
+  content: ' ';
+  background-image: url('../img/check-square-solid.svg');
+  background-repeat: no-repeat;
+  height: 20px;
+  width: 20px;
 }
 
 .esri-icon-non-visible:before {
-  content: "☐";
+  display: block;
+  content: ' ';
+  background-image: url('../img/square-regular.svg');
+  background-repeat: no-repeat;
+  height: 20px;
+  width: 20px;
 }
 
 .esri-search {
