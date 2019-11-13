@@ -357,7 +357,7 @@ require([
 
   var Klastripunktid = new FeatureLayer({
     url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/0",
-    title: "Statistiliselt olulised klastrid",
+    title: "Loomaõnnetuste koondumiskohad e klastrid",
     outFields: ["*"],
     renderer: PunktiRenderer,
     definitionExpression: "Strength > 0.1",
@@ -387,7 +387,7 @@ require([
 
   var Klastrijooned = new FeatureLayer({
     url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/1",
-    title: "Statistiliselt olulised klastrid",
+    title: "Loomaõnnetuste koondumiskohad e klastrid",
     outFields: ["*"],
     visible: false,
     renderer: JooneRenderer,
@@ -416,7 +416,7 @@ require([
   });
 
   var Klastrid = new GroupLayer({
-    title: "KDE+ analüüsi tulemused",
+    title: "KDE+ analüüs",
     layers: [Klastripunktid, Klastrijooned],
     listMode: "hide-children"
   });
