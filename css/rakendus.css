@@ -29,10 +29,6 @@ body, .popover {
   justify-content: space-between;
 }
 
-.esri-attribution {
-  display: none
-}
-
 .esri-ui-bottom-left {
   bottom: 25px;
 }

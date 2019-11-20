@@ -22,12 +22,13 @@ require([
   "esri/widgets/BasemapToggle",
   "esri/geometry/Extent",
   "esri/widgets/Slider",
+  "esri/widgets/Attribution",
   "esri/config",
   "dojo/dom",
   "dojo/query",
   "dojo/on",
   "dojo/domReady!"
-], function(Map, Basemap, WebMap, MapView, VectorTileLayer, MapImageLayer, FeatureLayer, WMSLayer, GroupLayer, PopupTemplate, Legend, Expand, LayerList, Fullscreen, Search, Feature, Locator, Home, DistanceMeasurement2D, AreaMeasurement2D, BasemapToggle, Extent, Slider, esriConfig, dom, query, on) {
+], function(Map, Basemap, WebMap, MapView, VectorTileLayer, MapImageLayer, FeatureLayer, WMSLayer, GroupLayer, PopupTemplate, Legend, Expand, LayerList, Fullscreen, Search, Feature, Locator, Home, DistanceMeasurement2D, AreaMeasurement2D, BasemapToggle, Extent, Slider, Attribution, esriConfig, dom, query, on) {
 
   //esriConfig.portalUrl = "https://maps.hendrikson.ee/arcgis/";
 
@@ -555,6 +556,7 @@ require([
   var homeWidget = new Home({
     view: view
   });
+  view.ui.remove("attribution");
 
   var searchWidget = new Search({
     view: view,
