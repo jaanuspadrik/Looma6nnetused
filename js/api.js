@@ -343,6 +343,14 @@ require([
       } else {
         return "rgb(255, 34, 0)"
       }
+    };
+    var punktideksX = function(){
+      var tekst = String(feature.graphic.attributes.inside_x)
+      return tekst.replace(",", ".")
+    }
+    var punktideksY = function(){
+      var tekst = String(feature.graphic.attributes.inside_y)
+      return tekst.replace(",", ".")
     }
     return (
       "<span style='line-height: 1.6;'><h4 style='font-size: 1.1rem'>Loomaõnnetuste klaster</h4>Klastri tugevus: "
@@ -352,7 +360,8 @@ require([
       + "{Strength}</span>"
       + "<br>Hukkunud suurulukeid klastris: {NPts_clus}<br>"
       + "Klastri pikkus: {Len_clus} m</span><br>"
-      + "{tee_nimi}<br>(Maantee nr {tee_number})"
+      + "{tee_nimi} (Maantee nr {tee_number})<br>"
+      + "<br><a style='font-weight: bold; color: black' target='_blank' href='http://maps.google.com/maps?q=&layer=c&cbll=" + (punktideksY()) + "," + (punktideksX()) + "'>Google Street View</a>"
     );
   }
 
