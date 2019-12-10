@@ -183,7 +183,13 @@ require([
     url: "http://maps.hendrikson.ee/arcgis/rest/services/Hosted/Loomaõnnetused_analüüsi_tulemused/FeatureServer/2",
     title: "Looduslike ohutegurite analüüs",
     visible: false,
-    renderer: LooduslikudRenderer
+    renderer: LooduslikudRenderer,
+    popupTemplate: {
+      content: "<span style='line-height: 1.6;'><h4 style='font-size: 1.1rem'>Looduslike ohutegurite analüüs</h4>Ohuaste: "
+      + "{Ohuaste}</span>"
+      + "<br>Maantee nr: {Maantee}"
+      + "<br>Pikkus: {Pikkus} m"
+    }
   });
 
   const PunktiRenderer = {
