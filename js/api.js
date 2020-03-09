@@ -135,21 +135,21 @@ require([
 
   const Ohtl1 = {
     type: "simple-line", // autocasts as new SimpleLineSymbol()
-    color: "rgb(0, 245, 245)",
+    color: "rgb(113,199,236)",
     width: "3px",
     style: "solid"
   };
 
   const Ohtl2 = {
     type: "simple-line", // autocasts as new SimpleLineSymbol()
-    color: "rgb(0, 0, 245)",
+    color: "rgb(24,154,211)",
     width: "3px",
     style: "solid"
   };
 
   const Ohtl3 = {
     type: "simple-line", // autocasts as new SimpleLineSymbol()
-    color: "rgb(245, 0, 245)",
+    color: "rgb(0 ,80, 115)",
     width: "3px",
     style: "solid"
   };
@@ -164,17 +164,17 @@ require([
       {
         value: "Üle keskmise ohtlik teelõik",
         symbol: Ohtl1,
-        label: "Üle keskmise ohtlik teelõik"
+        label: "Üle keskmise ohtlik teelõik (ohuaste 1)"
       },
       {
         value: "Kõrge ohuga teelõik",
         symbol: Ohtl2,
-        label: "Kõrge ohuga teelõik"
+        label: "Kõrge ohuga teelõik (ohuaste 2)"
       },
       {
         value: "Väga ohtlik teelõik",
         symbol: Ohtl3,
-        label: "Väga ohtlik teelõik"
+        label: "Väga ohtlik teelõik (ohuaste 3)"
       }
     ]
   };
@@ -365,7 +365,8 @@ require([
       + ";'>"
       + "{Strength}</span>"
       + "<br>Hukkunud suurulukeid klastris: {NPts_clus}<br>"
-      + "Klastri pikkus: {Len_clus} m</span><br>"
+      + "(sh {põder} põtra, {metssiga} metssiga, {metskits} metskitse)<br>"
+      + "Klastri pikkus: {Len_clus} m<br>"
       + "{tee_nimi} (Maantee nr {tee_number})<br>"
       + "<br><a style='font-weight: bold; color: black' target='_blank' href='http://maps.google.com/maps?q=&layer=c&cbll=" + (punktideksY()) + "," + (punktideksX()) + "'>Google Street View</a>"
     );
@@ -465,14 +466,11 @@ require([
 
   Klastrid.when(function() {
     strengthSlider.on(["thumb-drag"], strengthValueChanged);
-
     function strengthValueChanged(event) {
       selectedStrength = event.value;
       document.getElementById(
         "strength-display"
       ).innerHTML = selectedStrength.toLocaleString();
-      // update the layers after the user stops the slider to avoid continues requests
-
       if (event.state === "stop") {
         Klastripunktid.definitionExpression = "Strength > " + selectedStrength;
         Klastrijooned.definitionExpression = "Strength > " + selectedStrength;
@@ -498,8 +496,6 @@ require([
     });
 
     let cursorMove = function(layerView) {
-      let highlight;
-      // listen for the pointer-move event on the View
       view.on("pointer-move", function(event) {
         view.hitTest(event).then(function(event) {
           // Make sure graphic has a popupTemplate
@@ -583,13 +579,15 @@ require([
     sources: [
     {
     locator: new Locator("//geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"),
+    countryCode: "EST",
     singleLineFieldName: "SingleLine",
     outFields: ["Addr_type"],
     name: "Otsi aadressi järgi",
-    localSearchOptions: {
+    minSuggestCharacters: 3,
+    /*localSearchOptions: {
       minScale: 300000,
       distance: 50000
-    },
+    },*/
     placeholder: "Sisesta kohanimi/aadress",
     resultSymbol: {
        type: "picture-marker",  // autocasts as new PictureMarkerSymbol()
